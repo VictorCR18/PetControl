@@ -3,9 +3,12 @@ var express = require('express');
 var db = require('../database/index.js')
 
 class Q_gastosController {
-    
+
     getAllData = (req, res) => {
-        let qr = `SELECT * FROM q_gastos`
+        let qr =    `select q_gastos.id, q_gastos.item, q_gastos.preco, pets.nome
+                    from q_gastos
+                    inner join pets
+                    on q_gastos.pet_id = pets.id`
 
         db.query(qr, (err, result) => {
             if (err) {
@@ -19,7 +22,11 @@ class Q_gastosController {
     getSingleData = (req, res) => {
         let gID = req.params.id;
 
-        let qr = `SELECT * FROM Q_GASTOS WHERE ID = ${gID}`;
+        let qr = `select *
+        from q_gastos
+        inner join pets 
+        on q_gastos.pet_id = pets.id WHERE q_gastos.id = ${gID}`;
+
 
         db.query(qr, (err, result) => {
             if (err) {
@@ -33,21 +40,37 @@ class Q_gastosController {
     getCreateData = (req, res) => {
         console.log(req.body, 'createdata');
 
-        let item = req.body.item;
-        let pet = req.body.pet;
-        let preco = req.body.preco;
 
-        let qr = `insert into q_gastos (item, pet, preco)
-             values ('${item}','${pet}','${preco}')`;
+        let item = req.body.item;
+        let preco = req.body.preco;
+        let nome = req.body.nome;
+
+
+        let qr = `SELECT * FROM pets WHERE nome = "${nome}"`
 
         db.query(qr, (err, result) => {
             if (err) {
                 console.log(err);
-            } else {
-                res.status(200).json(result);
+                return
             }
+            let qrTwo = `
+                INSERT INTO q_gastos (item, preco, pet_id) 
+                VALUES ('${item}', '${preco}', '${result[0].id}')`
+
+            db.query(qrTwo, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+
+                    res.status(200).json(result);
+                }
+            });
+
         });
+
+
     }
+
 
     getUpdateData = (req, res) => {
         console.log(req.body, 'updatedata');
@@ -55,23 +78,33 @@ class Q_gastosController {
         let gID = req.params.id;
 
         let item = req.body.item;
-        let pet = req.body.pet;
+        let nome = req.body.nome;
         let preco = req.body.preco;
 
-        let qr = `update q_gastos set item = '${item}', pet = '${pet}', preco = '${preco}'
-    where id = ${gID} `;
+        let qr = `SELECT * FROM pets WHERE nome = "${nome}"`
 
         db.query(qr, (err, result) => {
             if (err) {
                 console.log(err);
-            } else {
-                res.status(200).json(result);
+                return
             }
-        });
+            let qrTwo = `update q_gastos set item = '${item}', pet_id = ${result[0].id}, preco = '${preco})' where id = ${gID}`
+
+            db.query(qrTwo, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+
+                    res.status(200).json(result);
+                }
+            });
+
+        })
     }
 
     getDeleteData = (req, res) => {
-        console.log(req.body, 'updatedata');
+        console.log(req.body, 'deleteddata');
+        //
 
         let gID = req.params.id;
 

@@ -2,86 +2,89 @@ var express = require('express');
 
 var db = require('../database/index.js')
 
-class PetController{
+class PetController {
 
     getAllPets = (req, res) => {
 
-    let qr = `SELECT * FROM pets`
+        let qr = `SELECT * FROM pets`
 
-    db.query(qr, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.status(200).json(result);
-        }
-    })
-}
+        db.query(qr, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json(result);
+            }
+        })
+    }
 
-getSinglePet = (req, res) => {
-    let gID = req.params.id;
+    getSinglePet = (req, res) => {
+        let gID = req.params.id;
 
-    let qr = `SELECT * FROM PETS WHERE ID = ${gID}`;
+        let qr = `SELECT * FROM PETS WHERE ID = ${gID}`;
 
-    db.query(qr, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.status(200).json(result);
-        }
-    });
-}
+        db.query(qr, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    }
 
-getCreatePet = (req, res) => {
-    console.log(req.body, 'createdata');
+    getCreatePet = (req, res) => {
+        console.log(req.body, 'createdata');
 
-    let nome = req.body.nome;
-
-    let qr = `insert into pets (nome)
-         values ('${nome}'`;
-
-    db.query(qr, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.status(200).json(result);
-        }
-    });
-}
-
-getUpdatePet = (req, res) => {
-    console.log(req.body, 'updatedata');
-
-    let gID = req.params.id;
-
-    let nome = req.body.nome;
+        let nome = req.body.nome;
+        let especie = req.body.especie;
 
 
-    let qr = `update pets set nome = '${nome}'
-where id = ${gID} `;
+        let qr = `INSERT INTO pets (id, nome, especie)
+     VALUES (NULL, '${nome}', '${especie}')`;
 
-    db.query(qr, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.status(200).json(result);
-        }
-    });
-}
+        db.query(qr, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    }
 
-getDeletePet = (req, res) => {
-    console.log(req.body, 'updatedata');
+    getUpdatePet = (req, res) => {
+        console.log(req.body, 'updatedata');
 
-    let gID = req.params.id;
+        let gID = req.params.id;
 
-    let qr = `delete from pets where id = ${gID} `;
-    db.query(qr, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.status(200).json(result);
-        }
-    });
-}
+        let nome = req.body.nome;
+        let especie = req.body.especie;
+
+        let qr = `update pets set nome = '${nome}', especie = '${especie}'
+        where id = ${gID} `;
+
+        db.query(qr, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    }
+
+    getDeletePet = (req, res) => {
+
+        console.log(req.body, 'deletedata');
+
+        let gID = req.params.id;
+
+        let qr = `delete from pets where id = ${gID} `;
+        db.query(qr, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    }
 
 }
 
