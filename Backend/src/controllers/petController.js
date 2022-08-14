@@ -17,6 +17,7 @@ class PetController {
         })
     }
 
+
     getSinglePet = (req, res) => {
         let gID = req.params.id;
 

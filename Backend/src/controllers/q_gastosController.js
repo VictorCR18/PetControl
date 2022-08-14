@@ -5,7 +5,7 @@ var db = require('../database/index.js')
 class Q_gastosController {
 
     getAllData = (req, res) => {
-        let qr =    `select q_gastos.id, q_gastos.item, q_gastos.preco, pets.nome
+        let qr = `select q_gastos.id, q_gastos.item, q_gastos.preco, pets.nome
                     from q_gastos
                     inner join pets
                     on q_gastos.pet_id = pets.id`
@@ -88,7 +88,8 @@ class Q_gastosController {
                 console.log(err);
                 return
             }
-            let qrTwo = `update q_gastos set item = '${item}', pet_id = ${result[0].id}, preco = '${preco})' where id = ${gID}`
+
+            let qrTwo = `update q_gastos set item = '${item}', pet_id = ${result[0].id}, preco = '${preco}' where id = ${gID}`
 
             db.query(qrTwo, (err, result) => {
                 if (err) {
